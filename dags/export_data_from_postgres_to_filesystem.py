@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from airflow import DAG
-from common.postgres_to_filesystem import ExportDataFromPostgresToFileSystem
+from common.postgres_to_filesystem_operator import ExportDataFromPostgresToFileSystemOperator
 import os
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.postgres_operator import PostgresHook
@@ -27,7 +27,7 @@ tables_tasks = []
 
 for table in tables:
     tables_tasks.append(
-        ExportDataFromPostgresToFileSystem(
+        ExportDataFromPostgresToFileSystemOperator(
             task_id=f'extract_table_{table[0]}',
             dag=dag,
             postgres_conn_id='dshop', 

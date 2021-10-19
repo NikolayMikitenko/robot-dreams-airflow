@@ -5,14 +5,14 @@ from pathlib import Path
 import csv
 import os
 
-class ExportDataFromPostgresToFileSystem(PythonOperator):
+class ExportDataFromPostgresToFileSystemOperator(PythonOperator):
     def __init__(self, postgres_conn_id: str, file_system_path: Path, table: str, *args, **kwargs):
-        super(PythonOperator, self).__init__(*args, **kwargs)
+        super(ExportDataFromPostgresToFileSystemOperator, self).__init__(*args, **kwargs)
         self.postgres_conn_id = postgres_conn_id
         self.file_system_path = file_system_path
-        self.templates_dict={}
-        self.op_args=[]
-        self.op_kwargs={}
+        #self.templates_dict={}
+        #self.op_args=[]
+        #self.op_kwargs={}
         self.table = table
         
     def execute(self, context):
