@@ -1,6 +1,10 @@
 # Project for robot dreams airflow ETL
 
-##COPY ALL FILES FROM FOLDER dags to airflow/dags and add PYTHONPATH to common folder
+## COPY ALL FILES FROM FOLDER dags to airflow/dags and add PYTHONPATH to common folder!!!
+
+## Task logic
+1. Load data from DB - realizied with query list of DB objects and create dynamic dag
+2. Load data from http - realized with using start date parameter
 
 ## Folders contents
 * dags - folder with dags and their configs and python modules
@@ -20,6 +24,4 @@
 
 * config/config.yaml - file with http aplication config
 
-##Task logic
-1. Load data from DB - realizied with query list of DB objects and create dynamic dag
-2. Load data from http - realized with using start date parameter
+
