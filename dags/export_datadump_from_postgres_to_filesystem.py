@@ -34,7 +34,7 @@ print(tables)
 for table in tables:
     tables_tasks.append(
         ExportDataDumpFromPostgresToFileSystem(
-            task_id=f'extract_table_{table}',
+            task_id=f'extract_table_{table[0]}',
             dag=dag,
             postgres_conn_id=postgres_conn_id, 
             file_system_path=os.path.join('.', 'data', 'dshop_data'),
