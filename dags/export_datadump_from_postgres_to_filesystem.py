@@ -21,15 +21,9 @@ def get_tables_list(postgres_conn_id: str):
             cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';")
             return cur.fetchall()
 
+tables = get_tables_list(postgres_conn_id)
 
 tables_tasks = []
-#tables = ['aisles', 'clients']
-tables = get_tables_list(postgres_conn_id)
-print(type(tables))
-print(tables)
-
-
-
 
 for table in tables:
     tables_tasks.append(
@@ -38,7 +32,7 @@ for table in tables:
             dag=dag,
             postgres_conn_id=postgres_conn_id, 
             file_system_path=os.path.join('.', 'data', 'dshop_data'),
-            table=table
+            table=table[0]
         )
     )
 
