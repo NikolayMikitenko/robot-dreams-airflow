@@ -1,9 +1,9 @@
 # Project for robot dreams airflow ETL
 
 ## Folders contents
-dags - folder with dags and their configs and python modules
-dags/common - folder with dags modules
-dags/config - folder with dag configs
+* dags - folder with dags and their configs and python modules
+* dags/common - folder with dags modules
+* dags/config - folder with dag configs
 
 ## Files contents
 export_data_from_postgres_to_filesystem.py - dag for load data from DB using SELECT statement
