@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
 from common.postgres_dump_to_filesystem_operator import ExportDataDumpFromPostgresToFileSystemOperator
 import os
 from airflow.operators.dummy_operator import DummyOperator
@@ -25,6 +26,9 @@ tables = get_tables_list(postgres_conn_id)
 
 tables_tasks = []
 
+def empty():
+    pass
+
 for table in tables:
     tables_tasks.append(
         ExportDataDumpFromPostgresToFileSystemOperator(
@@ -32,7 +36,8 @@ for table in tables:
             dag=dag,
             postgres_conn_id=postgres_conn_id, 
             file_system_path=os.path.join('.', 'data', 'dshop_data'),
-            table=table[0]
+            table=table[0],
+            python_callable=empty
         )
     )
 

@@ -25,6 +25,9 @@ tables = get_tables_list(postgres_conn_id)
 
 tables_tasks = []
 
+def empty():
+    pass
+
 for table in tables:
     tables_tasks.append(
         ExportDataFromPostgresToFileSystemOperator(
@@ -32,7 +35,8 @@ for table in tables:
             dag=dag,
             postgres_conn_id='dshop', 
             file_system_path=os.path.join('.', 'data', 'dshop_data'),
-            table=table[0]
+            table=table[0],
+            python_callable=empty
         )
     )
 
