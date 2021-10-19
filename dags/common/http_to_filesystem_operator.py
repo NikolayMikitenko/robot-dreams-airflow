@@ -1,24 +1,26 @@
-from airflow.operators.python_operator import PythonOperator
+#from airflow.operators.python_operator import PythonOperator
 from airflow.hooks.http_hook import HttpHook
 from pathlib import Path
 from datetime import datetime
-import config
 import json
 import requests
 import os
+from common import config
 
-class HttpToFileSystemOperator(PythonOperator):
-    def __init__(self, config_path: Path, app_name: str, date: datetime.date, timeout: int, file_system_path: Path, *args, **kwargs):
-        super(HttpToFileSystemOperator, self).__init__(*args, **kwargs)
-        print(os.getcwd())
-        print(date)
+#class HttpToFileSystemOperator(PythonOperator):
+    #def __init__(self, config_path: Path, app_name: str, date: datetime.date, timeout: int, file_system_path: Path, *args, **kwargs):
+    #    super(HttpToFileSystemOperator, self).__init__(*args, **kwargs)
+    
+class HttpToFileSystemOperator():    
+    def __init__(self, config_path: Path, app_name: str, date: datetime.date, timeout: int, file_system_path: Path):
         self.config_path = config_path
         self.app_name = app_name
         self.date = date
         self.timeout = timeout
         self.file_system_path = file_system_path
 
-    def execute(self, context):
+    #def execute(self, context):
+    def execute(self):
         self.app_config = self.load_config()
         self.validate_app_config()
 
