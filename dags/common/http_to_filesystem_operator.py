@@ -10,8 +10,8 @@ from common import config
 #class HttpToFileSystemOperator(PythonOperator):
     #def __init__(self, config_path: Path, app_name: str, date: datetime.date, timeout: int, file_system_path: Path, *args, **kwargs):
     #    super(HttpToFileSystemOperator, self).__init__(*args, **kwargs)
-    
-class HttpToFileSystemOperator():    
+
+class HttpToFileSystemOperator():
     def __init__(self, config_path: Path, app_name: str, date: datetime.date, timeout: int, file_system_path: Path):
         self.config_path = config_path
         self.app_name = app_name
@@ -28,7 +28,7 @@ class HttpToFileSystemOperator():
         if self.app_config.get('auth'):
             token = self.get_token()
 
-        self.call_api(token=token)      
+        self.call_api(token=token)
 
     def load_config(self):
         try:
@@ -36,7 +36,7 @@ class HttpToFileSystemOperator():
         except FileNotFoundError as e:
             e.strerror =  'Config file for app not found. ' + e.strerror
             raise e
-        except KeyError as e: 
+        except KeyError as e:
             raise KeyError(f'Can not find aplication: "{self.app_name}" in config file "{str(self.config_path)}".')
 
     def validate_app_config(self):
