@@ -21,9 +21,8 @@ for table in tables:
             task_id=f'extract_table_{table}',
             dag=dag,
             postgres_conn_id='dshop', 
-            file_system_path=os.path.join('home', 'user', 'data', 'dshop_data'),
-            #file_system_path=os.path.join('.', 'data', 'dshop_data'),
-            table=table,
+            file_system_path=os.path.join('.', 'data', 'dshop_data'),
+            table=table
         )
     )
 
