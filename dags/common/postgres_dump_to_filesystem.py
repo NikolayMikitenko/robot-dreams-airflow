@@ -15,13 +15,14 @@ class ExportDataDumpFromPostgresToFileSystem(PythonOperator):
         self.table = table
         
     def execute(self, context):
-        sql=f"SELECT * FROM {self.table}"
-        self.log.info('Executing: %s', sql)
-
+        #Check if dir exists
         os.makedirs(self.file_system_path, exist_ok=True)
+        
+        #Create path
         file_path = os.path.join(self.file_system_path, self.table + '.csv')
 
-        self.hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
+        #Dump data
         self.log.info(f'Write data from table {self.table} to file {file_path}')
-        #self.hook.bulk_dump(self.table, file_path)
+        self.hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)        
+        #self.hook.bulk_dump(self.table, file_path) #DO NOT WRITE HEADERS AND USE TAB AS SEPARATOR
         self.hook.copy_expert("COPY {table} TO STDOUT DELIMITER ',' CSV HEADER;".format(table=self.table), file_path)
