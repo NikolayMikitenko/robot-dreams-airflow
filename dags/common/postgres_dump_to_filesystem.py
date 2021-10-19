@@ -23,4 +23,5 @@ class ExportDataDumpFromPostgresToFileSystem(PythonOperator):
 
         self.hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
         self.log.info(f'Write data from table {self.table} to file {file_path}')
-        self.hook.bulk_dump(self.table, file_path)
+        #self.hook.bulk_dump(self.table, file_path)
+        self.hook.copy_expert("COPY {table} TO STDOUT DELIMITER ',' CSV HEADER;".format(table=self.table), file_path)
