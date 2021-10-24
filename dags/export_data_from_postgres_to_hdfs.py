@@ -10,6 +10,7 @@ dag = DAG(
     dag_id='export_data_from_Postgres_to_HDFS_dag'
     , start_date=datetime(2021, 1, 1)
     , schedule_interval=None
+    #, retries = 3
 )
 
 postgres_conn_id='dshop'
@@ -25,9 +26,9 @@ tables = get_tables_list(postgres_conn_id)
 
 tables_tasks = []
 
-def export_data_dump_to_hdfs(table):
+def export_data_dump_to_hdfs(**kwargs):
     hdfs_path = os.path.join('/', 'bronze', 'dshop')
-    PostgresToWebHDFSOperator('dshop', 'local_webhdfs', hdfs_path, table).execute()
+    PostgresToWebHDFSOperator('dshop', 'local_webhdfs', hdfs_path, kwargs['table']).execute()
 
 #t1 = PythonOperator(
 #    task_id='db_data_to_hdfs',
@@ -40,6 +41,9 @@ for table in tables:
         PythonOperator(
             task_id=f'extract_table_{table[0]}',
             dag=dag,
-            python_callable=export_data_dump_to_hdfs(table[0])
+            python_callable=export_data_dump_to_hdfs,
+            provide_context=True,
+            op_kwargs={'table':table[0]},
+            retries = 3
         )
     )
