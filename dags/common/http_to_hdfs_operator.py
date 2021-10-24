@@ -93,13 +93,13 @@ class HttpToHDFSOperator():
         with open(file_path, 'w') as f:
             json.dump(data, f)            
 
-        hdfs_path = os.path.join(self.hdfs_path, self.app_name, self.date._year, self.date._month)
+        hdfs_path = os.path.join(self.hdfs_path, self.app_name, self.date.year, self.date.month)
         hdfs_file_path = os.path.join(hdfs_path, self.app_name + '_' + parameters[self.app_config['data parameter']] + '.json')
 
         whh = WebHDFSHook(self.hdfs_conn_id)
         whdfs_client = whh.get_conn()
         # Check if folder exists and create
-        whdfs_client.makedirs(hdfs_path, )
+        whdfs_client.makedirs(hdfs_path)
         self.log.info(f'End write data from file {file_path} to hdfs {hdfs_file_path}') 
         # Put file to hdfs
         whh.load_file(file_path, hdfs_file_path, overwrite=True)
