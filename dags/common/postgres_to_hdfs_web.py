@@ -13,20 +13,23 @@ class PostgresToWebHDFSOperator():
         self.postgres_conn_id = postgres_conn_id
         self.hdfs_conn_id = hdfs_conn_id
         self.hdfs_path = hdfs_path
+        self.table = table
         self.log = logging.getLogger(self.__class__.__module__ + '.' + self.__class__.__name__)
 
     def execute(self):
-        with WebHDFSHook('hdfs_conn_id').get_conn() as whdfs_client:
-            #Check if folder exists and create
-            whdfs_client.makedirs('hdfs_path')
-            #Create file path
-            file_path = os.path.join(self.hdfs_path, self.table + '.csv')
-            #Create hook fpr DB
-            postgres_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
+        whdfs_client = WebHDFSHook(self.hdfs_conn_id).get_conn()
+        #Check if folder exists and create
+        whdfs_client.makedirs('hdfs_path')
+        #Create file path
+        file_path = os.path.join(self.hdfs_path, self.table + '.csv')
+        #Create hook fpr DB
+        postgres_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
 
-            self.log.info(f'Begin write data from table {self.table} to file {file_path}')            
-            with whdfs_client.write(file_path) as csv:
-                postgres_hook.copy_expert("COPY {table} TO STDOUT DELIMITER ',' CSV HEADER;".format(table=self.table), csv)
+        self.log.info(f'Begin write data from table {self.table} to file {file_path}')            
+        with whdfs_client.write(file_path) as csv:
+            with postgres_hook.get_conn().cursor() as cur:
+                cur.copy_expert("COPY {table} TO STDOUT DELIMITER ',' CSV HEADER;".format(table=self.table), csv)
+            #postgres_hook.copy_expert("COPY {table} TO STDOUT DELIMITER ',' CSV HEADER;".format(table=self.table), csv)
 
 
         #with HDFSHook('hdfs_conn_id').get_conn() as hdfs_client:
