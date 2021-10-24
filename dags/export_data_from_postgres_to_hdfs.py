@@ -5,6 +5,7 @@ from airflow.operators.postgres_operator import PostgresHook
 from airflow.operators.python_operator import PythonOperator
 from common.postgres_to_hdfs_web import PostgresToWebHDFSOperator
 import os
+from airflow.operators.dummy_operator import DummyOperator
 
 dag = DAG(
     dag_id='export_data_from_Postgres_to_HDFS_dag'
@@ -47,3 +48,7 @@ for table in tables:
             retries = 3
         )
     )
+
+start_task = DummyOperator(task_id='start', dag=dag)
+end_task = DummyOperator(task_id='end', dag=dag)
+start_task >> tables_tasks >> end_task

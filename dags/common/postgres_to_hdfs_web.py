@@ -26,9 +26,10 @@ class PostgresToWebHDFSOperator():
         postgres_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
 
         self.log.info(f'Begin write data from table {self.table} to file {file_path}')            
-        with whdfs_client.write(file_path) as csv:
+        with whdfs_client.write(file_path, overwrite=True) as csv:
             with postgres_hook.get_conn().cursor() as cur:
                 cur.copy_expert("COPY {table} TO STDOUT DELIMITER ',' CSV HEADER;".format(table=self.table), csv)
+        self.log.info(f'End write data from table {self.table} to file {file_path}')
 
 
         #with HDFSHook('hdfs_conn_id').get_conn() as hdfs_client:
