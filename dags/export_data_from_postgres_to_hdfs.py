@@ -1,7 +1,6 @@
 from airflow import DAG
 from datetime import datetime
 from airflow.operators.postgres_operator import PostgresHook
-#from airflow.hooks.hdfs_hook import HDFSHook
 from airflow.operators.python_operator import PythonOperator
 from common.postgres_to_hdfs_web import PostgresToWebHDFSOperator
 import os
@@ -11,7 +10,6 @@ dag = DAG(
     dag_id='export_data_from_Postgres_to_HDFS_dag'
     , start_date=datetime(2021, 1, 1)
     , schedule_interval=None
-    #, retries = 3
 )
 
 postgres_conn_id='dshop'
@@ -31,12 +29,6 @@ def export_data_dump_to_hdfs(**kwargs):
     hdfs_path = os.path.join('/', 'bronze', 'dshop')
     PostgresToWebHDFSOperator('dshop', 'local_webhdfs', hdfs_path, kwargs['table']).execute()
 
-#t1 = PythonOperator(
-#    task_id='db_data_to_hdfs',
-#    dag=dag,
-#    python_callable=export_data_dump_to_hdfs    
-#)
-
 for table in tables:
     tables_tasks.append(                
         PythonOperator(
@@ -45,7 +37,6 @@ for table in tables:
             python_callable=export_data_dump_to_hdfs,
             provide_context=True,
             op_kwargs={'table':table[0]},
-            retries = 3
         )
     )
 
