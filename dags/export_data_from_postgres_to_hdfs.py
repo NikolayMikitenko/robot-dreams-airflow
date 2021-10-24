@@ -1,7 +1,7 @@
 from airflow import DAG
 from datetime import datetime
 from airflow.operators.postgres_operator import PostgresHook
-from airflow.providers.apache.hdfs.hooks.hdfs import *
+from airflow.hooks.hdfs_hook import HDFSHook
 from airflow.operators.python_operator import PythonOperator
 
 dag = DAG(
@@ -24,9 +24,10 @@ tables = get_tables_list(postgres_conn_id)
 tables_tasks = []
 
 def export_data_dump_to_hdfs():
-    import logging 
+    #import logging 
     cl = HDFSHook('local_hdfs').get_conn()
-    logging.info(cl.ls(["/"]))
+    cl.mkdir('/bronze')
+    #logging.info(cl.ls(["/"]))
 
 t1 = PythonOperator(
     task_id='db_data_to_hdfs',
@@ -35,7 +36,7 @@ t1 = PythonOperator(
     #postgres_conn_id='dshop', 
     #file_system_path=os.path.join('.', 'data', 'dshop_data'),
     #table=table[0],
-    python_callable=exoport_data_dump_tp_hdfs    
+    python_callable=export_data_dump_to_hdfs    
 )
 
 #for table in tables:
