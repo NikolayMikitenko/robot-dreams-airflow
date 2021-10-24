@@ -25,7 +25,7 @@ class HttpToHDFSOperator():
         if self.app_config.get('auth'):
             token = self.get_token()
 
-        self.call_api(token=token)    
+        self.call_api(token=token)
 
     def load_config(self):
         try:
@@ -40,16 +40,16 @@ class HttpToHDFSOperator():
         if not self.app_config.get('url'):
             raise Exception(f'Config for application "{self.app_name}" in file "{str(self.config_path)} do not contain url.')
         if not self.app_config.get('endpoint'):
-            raise Exception(f'Config for application "{self.app_name}" in file "{str(self.config_path)} do not contain endpoint.') 
-        if self.app_config.get('auth'):        
+            raise Exception(f'Config for application "{self.app_name}" in file "{str(self.config_path)} do not contain endpoint.')
+        if self.app_config.get('auth'):
             if not self.app_config['auth'].get('endpoint'):
                 raise Exception(f'Config for application "{self.app_name}" in file "{str(self.config_path)} do not contain endpoint for authentification.')
             if not self.app_config['auth'].get('parameters'):
-                raise Exception(f'Config for application "{self.app_name}" in file "{str(self.config_path)} do not contain parameters for authentification.')       
+                raise Exception(f'Config for application "{self.app_name}" in file "{str(self.config_path)} do not contain parameters for authentification.')
             if not self.app_config['auth'].get('type'):
-                raise Exception(f'Config for application "{self.app_name}" in file "{str(self.config_path)} do not contain type for authentification.')  
+                raise Exception(f'Config for application "{self.app_name}" in file "{str(self.config_path)} do not contain type for authentification.')
 
-    def get_token(self):  
+    def get_token(self):
         if self.app_config['auth']['type'] == "JWT TOKEN":
             r = requests.post(url=self.app_config['url'] + self.app_config['auth']['endpoint'], headers = self.app_config['headers'], json=self.app_config['auth']['parameters'], timeout=self.timeout)
             if r.status_code == 200:
@@ -60,13 +60,13 @@ class HttpToHDFSOperator():
             else:
                 raise Exception(f"Auth request return bad response state_code {str(r.status_code)} with message: {r.text}")
         else:
-            return ""  
+            return ""
 
     def call_api(self, token: str):
         headers = self.app_config['headers']
         if token:
             headers['Authorization'] = token
-        
+
         parameters = {"date": self.date}
 
         try:
@@ -83,23 +83,23 @@ class HttpToHDFSOperator():
 
     def save_to_file(self, parameters: json, data: json):
         temp_path = './temp'
-        
-        os.makedirs(temp_path, exist_ok=True)    
+
+        os.makedirs(temp_path, exist_ok=True)
         directory_path = os.path.join(temp_path, self.app_name)
         os.makedirs(directory_path, exist_ok=True)
         directory_path = os.path.join(directory_path, parameters[self.app_config['data parameter']])
         os.makedirs(directory_path, exist_ok=True)
         file_path = os.path.join(directory_path, self.app_name + '.json')
         with open(file_path, 'w') as f:
-            json.dump(data, f)            
+            json.dump(data, f)
 
-        hdfs_path = os.path.join(self.hdfs_path, self.app_name, self.date.year, self.date.month)
+        hdfs_path = os.path.join(self.hdfs_path, self.app_name, self.date[0:4], self.date[0:7])
         hdfs_file_path = os.path.join(hdfs_path, self.app_name + '_' + parameters[self.app_config['data parameter']] + '.json')
 
         whh = WebHDFSHook(self.hdfs_conn_id)
         whdfs_client = whh.get_conn()
         # Check if folder exists and create
         whdfs_client.makedirs(hdfs_path)
-        self.log.info(f'End write data from file {file_path} to hdfs {hdfs_file_path}') 
+        self.log.info(f'End write data from file {file_path} to hdfs {hdfs_file_path}')
         # Put file to hdfs
         whh.load_file(file_path, hdfs_file_path, overwrite=True)
