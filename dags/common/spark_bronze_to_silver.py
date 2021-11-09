@@ -56,7 +56,8 @@ def load_bronze_dshop_orders_to_silver(*args, **kwargs):
 
     logging.info(f"Begin of aggregating data")
     df = df.groupby(F.col("order_id"), F.col("product_id"), F.col("client_id"), F.col("store_id"), F.col("order_date"))\
-        .agg(F.sum(F.col('quantity')))
+        .agg(F.sum(F.col('quantity')))\
+        .select(F.col("order_id"), F.col("product_id"), F.col("client_id"), F.col("store_id"), F.col("order_date"), F.col('sum(quantity)').alias('quantity'))
     logging.info(f"End of aggregating data")
 
     logging.info(f"Begin of write data for table: orders to Silver {clean_path}")            
