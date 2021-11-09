@@ -14,14 +14,14 @@ dag = DAG(
     , schedule_interval='@daily'
 )
 
-tables = ['aisles', 'clients', 'departments', 'orders', 'products'] 
+bronze_tables = ['aisles', 'clients', 'departments', 'orders', 'products'] 
 load_to_bronze_tasks = []
 
 silver_tables = ['aisles', 'clients', 'departments', 'products'] 
 special_table = 'orders'
 load_to_silver_tasks = []
 
-for table in tables:
+for table in bronze_tables:
     load_to_bronze_tasks.append(                
         PythonOperator(
             task_id=f'load_to_bronze_table_{table}',
@@ -32,7 +32,7 @@ for table in tables:
         )
     )
 
-for table in tables:
+for table in silver_tables:
     load_to_silver_tasks.append(                
         PythonOperator(
             task_id=f'load_to_silver_table_{table}',
