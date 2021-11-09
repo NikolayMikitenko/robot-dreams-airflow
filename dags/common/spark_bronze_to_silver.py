@@ -25,7 +25,7 @@ def load_postgres_bronze_to_silver(table: str, project: str, *args, **kwargs):
         .option('inferSchema', True)\
         .csv(raw_path)
     logging.info(f"End read data for table: {table} from {raw_path} to spark dataframe")
-    logging.info(f"Dataframe shape is: {df.shape}")
+    logging.info(f"Dataframe size is: {df.count()} rows")
 
     logging.info(f"Begin of write data for table: {table} to Silver {clean_path}")
     df.write.parquet(clean_path, mode='overwrite')
@@ -52,7 +52,7 @@ def load_bronze_dshop_orders_to_silver(*args, **kwargs):
         .option('inferSchema', True)\
         .csv(raw_path)
     logging.info(f"End read data for table: orders from {raw_path} to spark dataframe")
-    logging.info(f"Dataframe shape is: {df.shape}")
+    logging.info(f"Dataframe size is: {df.count()} rows")
 
     logging.info(f"Begin of aggregating data")
     df = df.groupby(F.col("order_id"), F.col("product_id"), F.col("client_id"), F.col("store_id"), F.col("order_date"))\

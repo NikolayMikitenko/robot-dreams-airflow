@@ -28,7 +28,7 @@ def load_postgres_to_bronze(table: str, postgres_conn_id: str, *args, **kwargs):
     df = spark.read.jdbc(pg_url, table=table, properties=pg_creds)
 
     logging.info(f"End read data from {table} to spark dataframe")
-    logging.info(f"Dataframe shape is: {df.shape}")
+    logging.info(f"Dataframe size is: {df.count()} rows")
 
 
     logging.info(f"Begin of write data from {table} to Bronze {hdfs_path}")
