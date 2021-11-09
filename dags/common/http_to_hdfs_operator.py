@@ -93,7 +93,7 @@ class HttpToHDFSOperator():
         with open(file_path, 'w') as f:
             json.dump(data, f)
 
-        hdfs_path = os.path.join(self.hdfs_path, self.app_name, self.date[0:4], self.date[0:7])
+        hdfs_path = os.path.join(self.hdfs_path, self.app_name, self.date[0:4], self.date[0:7], self.date[0:10])
         hdfs_file_path = os.path.join(hdfs_path, self.app_name + '_' + parameters[self.app_config['data parameter']] + '.json')
 
         whh = WebHDFSHook(self.hdfs_conn_id)
