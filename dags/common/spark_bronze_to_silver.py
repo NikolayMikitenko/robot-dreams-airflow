@@ -5,7 +5,7 @@ import os
 from sqlalchemy.sql.functions import mode
 import logging
 
-def load_postgres_bronze_to_silver(table: str, project: str):
+def load_postgres_bronze_to_silver(table: str, project: str, *args, **kwargs):
 
     logging.info(f"Load table: {table} for project: {project} to Silver")
 
@@ -32,7 +32,7 @@ def load_postgres_bronze_to_silver(table: str, project: str):
     logging.info(f"Writed {df.count()} rows")
     logging.info(f"Table: {table} loaded to Silver {clean_path}")    
 
-def load_bronze_dshop_orders_to_silver():
+def load_bronze_dshop_orders_to_silver(*args, **kwargs):
 
     logging.info(f"Load table: orders for project: dshop to Silver")
 

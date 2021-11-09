@@ -3,7 +3,7 @@ from airflow.hooks.base_hook import BaseHook
 import os
 import logging
 
-def load_postgres_to_bronze(table: str, postgres_conn_id: str):
+def load_postgres_to_bronze(table: str, postgres_conn_id: str, *args, **kwargs):
 
     logging.info(f"Load table: {table} from DB: {postgres_conn_id} to Bronze")
 

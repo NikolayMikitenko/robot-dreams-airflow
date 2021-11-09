@@ -52,9 +52,10 @@ load_to_silver_orders_task = PythonOperator(
 
 
 
-#start_task = DummyOperator(task_id='start', dag=dag)
+start_task = DummyOperator(task_id='start', dag=dag)
 end_bronze_task = DummyOperator(task_id='end_bronze_task', dag=dag)
 
-load_to_bronze_tasks >> end_bronze_task
+
+start_task >> load_to_bronze_tasks >> end_bronze_task
 end_bronze_task >> load_to_silver_tasks
 end_bronze_task >> load_to_silver_orders_task
