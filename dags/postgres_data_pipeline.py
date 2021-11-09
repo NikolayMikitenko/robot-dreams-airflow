@@ -3,7 +3,7 @@ from datetime import datetime
 from airflow.operators.python_operator import PythonOperator
 from common.postgres_to_hdfs_web import PostgresToWebHDFSOperator
 import os
-#from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.dummy_operator import DummyOperator
 from common.spark_postgres_to_bronze import load_postgres_to_bronze
 from common.spark_bronze_to_silver import load_postgres_bronze_to_silver
 from common.spark_bronze_to_silver import load_bronze_dshop_orders_to_silver
@@ -50,5 +50,11 @@ load_to_silver_orders_task = PythonOperator(
     provide_context=True,
 )
 
-load_to_bronze_tasks >> load_to_silver_tasks
-load_to_bronze_tasks >> load_to_silver_orders_task
+
+
+#start_task = DummyOperator(task_id='start', dag=dag)
+end_bronze_task = DummyOperator(task_id='end', dag=dag)
+
+load_to_bronze_tasks >> end_bronze_task
+end_bronze_task >> load_to_silver_tasks
+end_bronze_task >> load_to_silver_orders_task
