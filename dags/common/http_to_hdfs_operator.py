@@ -6,6 +6,7 @@ import os
 import json
 from airflow.hooks.webhdfs_hook import WebHDFSHook
 import logging
+import logging
 
 class HttpToHDFSOperator():
     def __init__(self, config_path: Path, app_name: str, date: datetime.date, timeout: int, hdfs_conn_id: str, hdfs_path: Path):
@@ -75,9 +76,13 @@ class HttpToHDFSOperator():
                 if len(r.json()) > 0:
                     self.save_to_file(parameters=parameters, data=r.json())
                 else:
-                    print(f"[ERROR] Request to url: {self.app_config['url'] + self.app_config['endpoint']} with parameters: {parameters} return empty JSON answer")
+                    logging.info(f"[ERROR] Request to url: {self.app_config['url'] + self.app_config['endpoint']} with parameters: {parameters} return empty JSON answer")   
+                    raise Exception(f"[ERROR] Request to url: {self.app_config['url'] + self.app_config['endpoint']} with parameters: {parameters} return empty JSON answer")
+                    #print(f"[ERROR] Request to url: {self.app_config['url'] + self.app_config['endpoint']} with parameters: {parameters} return empty JSON answer")
             else:
-                print(f"[ERROR] Request to url: {self.app_config['url'] + self.app_config['endpoint']} with parameters: {parameters} return bad response state_code {str(r.status_code)} with message: {r.text}")
+                logging.info(f"[ERROR] Request to url: {self.app_config['url'] + self.app_config['endpoint']} with parameters: {parameters} return bad response state_code {str(r.status_code)} with message: {r.text}")
+                raise Exception(f"[ERROR] Request to url: {self.app_config['url'] + self.app_config['endpoint']} with parameters: {parameters} return bad response state_code {str(r.status_code)} with message: {r.text}")
+                #print(f"[ERROR] Request to url: {self.app_config['url'] + self.app_config['endpoint']} with parameters: {parameters} return bad response state_code {str(r.status_code)} with message: {r.text}")
         except Exception as e:
             print(f"[ERROR] Request to url: {self.app_config['url'] + self.app_config['endpoint']} with parameters: {self.app_config['parameters']} return Exception: {str(e)}")
 
