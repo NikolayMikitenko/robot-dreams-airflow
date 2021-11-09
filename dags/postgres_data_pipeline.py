@@ -24,7 +24,7 @@ load_to_silver_tasks = []
 for table in tables:
     load_to_bronze_tasks.append(                
         PythonOperator(
-            task_id=f'load_to_bronze_table_{table[0]}',
+            task_id=f'load_to_bronze_table_{table}',
             dag=dag,
             python_callable=load_postgres_to_bronze,
             provide_context=True,
@@ -35,7 +35,7 @@ for table in tables:
 for table in tables:
     load_to_silver_tasks.append(                
         PythonOperator(
-            task_id=f'load_to_silver_table_{table[0]}',
+            task_id=f'load_to_silver_table_{table}',
             dag=dag,
             python_callable=load_postgres_bronze_to_silver,
             provide_context=True,
@@ -53,7 +53,7 @@ load_to_silver_orders_task = PythonOperator(
 
 
 #start_task = DummyOperator(task_id='start', dag=dag)
-end_bronze_task = DummyOperator(task_id='end', dag=dag)
+end_bronze_task = DummyOperator(task_id='end_bronze_task', dag=dag)
 
 load_to_bronze_tasks >> end_bronze_task
 end_bronze_task >> load_to_silver_tasks
